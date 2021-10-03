@@ -17,6 +17,14 @@ class Application:
         return Application(a, f)
 class Function:
     def __init__(self, body):
+        if not isinstance(body, (Application, Function, Variable)):
+            body = body.strip()
+            if body[0] in '&':
+                body = Function(body)
+            elif body[0] in '!':
+                body = Application(body)
+            else:
+                body = Variable(body)
         self.body = body
     def __repr__(self):
         return f"Function({repr(self.body)})"
@@ -28,6 +36,8 @@ class Function:
         return Function(self.body.substitute(variable + 1, value.reindex(1, 1)))
 class Variable:
     def __init__(self, nesting_level):
+        if not isinstance(nesting_level, int):
+            nesting_level = int(nesting_level)
         self.nesting_level = nesting_level
     def __repr__(self):
         return f"Variable({self.nesting_level})"
