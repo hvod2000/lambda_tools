@@ -17,14 +17,6 @@ class Application:
         return Application(a, f)
 class Function:
     def __init__(self, body):
-        if not isinstance(body, (Application, Function, Variable)):
-            body = body.strip()
-            if body[0] in '&':
-                body = Function(body)
-            elif body[0] in '!':
-                body = Application(body)
-            else:
-                body = Variable(body)
         self.body = body
     def __repr__(self):
         return f"Function({repr(self.body)})"
@@ -36,8 +28,6 @@ class Function:
         return Function(self.body.substitute(variable + 1, value.reindex(1, 1)))
 class Variable:
     def __init__(self, nesting_level):
-        if not isinstance(nesting_level, int):
-            nesting_level = int(nesting_level)
         self.nesting_level = nesting_level
     def __repr__(self):
         return f"Variable({self.nesting_level})"
@@ -61,3 +51,30 @@ def reduce_lambda_to_head_beta_normal_form(lambda_expression):
     while args:
         f = Application(args.pop(), f)
     return f
+
+def string_to_lambda_expression(source):
+    IGNORED_CHARACTERS = ' \t\n'
+    def skipl(i):
+        while i < len(source) and source[i] in IGNORED_CHARACTERS:
+            i += 1
+        return i
+    def str_to_expression(start):
+        start = skipl(start)
+        if source[start] in "&":
+            body, end = str_to_expression(start + 1)
+            return Function(body), end
+        v, i = str_to_simple_expression(start)
+        if i < len(source) and source[i] in "!":
+            f, end = str_to_expression(i + 1)
+            return Application(v, f), end
+        return v, i
+    def str_to_simple_expression(start):
+        start = skipl(start)
+        if source[start] in "(":
+            e, i = str_to_expression(start + 1)
+            return e, skipl(i + 1)
+        i = start
+        while i < len(source) and source[i] in "0123456789":
+            i += 1
+        return Variable(int(source[start:i])), skipl(i)
+    return str_to_expression(0)[0]
