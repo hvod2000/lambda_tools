@@ -37,3 +37,17 @@ class Variable:
         return self if self.nesting_level < min_index else Variable(self.nesting_level + delta)
     def substitute(self, variable, value):
         return value if variable == self.nesting_level else self
+
+def reduce_lambda_to_head_beta_normal_form(lambda_expression):
+    args, f = [], lambda_expression
+    while not isinstance(f, Variable):
+        if isinstance(f, Application):
+            a, f = f.argument, f.funcion
+            args.append(a)
+        elif args:
+            f = f.body.substitute(1, args.pop().reindex(1, 1)).reindex(2, -1)
+        else:
+            break
+    while args:
+        f = Application(args.pop(), f)
+    return f
