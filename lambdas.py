@@ -15,6 +15,10 @@ class Application:
         a = self.argument.substitute(variable, value)
         f = self.funcion.substitute(variable, value)
         return Application(a, f)
+    def get_free_variable_lvl(self):
+        lvl_a = self.argument.get_free_variable_lvl()
+        lvl_f = self.funcion.get_free_variable_lvl()
+        return max(lvl_a, lvl_f)
 class Function:
     def __init__(self, body):
         self.body = body
@@ -26,6 +30,8 @@ class Function:
         return Function(self.body.reindex(min_index + 1, delta))
     def substitute(self, variable, value):
         return Function(self.body.substitute(variable + 1, value.reindex(1, 1)))
+    def get_free_variable_lvl(self):
+        return max(0, self.body.get_free_variable_lvl() - 1)
 class Variable:
     def __init__(self, nesting_level):
         self.nesting_level = nesting_level
@@ -37,6 +43,8 @@ class Variable:
         return self if self.nesting_level < min_index else Variable(self.nesting_level + delta)
     def substitute(self, variable, value):
         return value if variable == self.nesting_level else self
+    def get_free_variable_lvl(self):
+        return self.nesting_level
 
 def reduce_lambda_to_head_beta_normal_form(lambda_expression):
     args, f = [], lambda_expression
