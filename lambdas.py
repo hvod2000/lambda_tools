@@ -46,6 +46,10 @@ class Variable:
     def get_free_variable_lvl(self):
         return self.nesting_level
 
+def reduce_lambda_to_beta_normal_form(lambda_expression):
+    hbnf = reduce_lambda_to_head_beta_normal_form(lambda_expression)
+    return Function(reduce_lambda_to_beta_normal_form(hbnf.body)) if isinstance(hbnf, Function) else hbnf
+
 def reduce_lambda_to_head_beta_normal_form(lambda_expression):
     args, f = [], lambda_expression
     while not isinstance(f, Variable):
