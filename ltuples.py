@@ -7,9 +7,9 @@ CLASSIC_SECOND = l("&(&&1)!1")
 POLISH_FIRST, POLISH_SECOND = CLASSIC_SECOND, CLASSIC_FIRST
 FIRST, SECOND = POLISH_FIRST, POLISH_SECOND
 
-SHEME = l('&&1!2')
-SHEME_BUILDER = l('&&&(&2!1!3)!3')
-TUPLE_BUILDER = l('&(&1)!1')
+SHEME = l("&&1!2")
+SHEME_BUILDER = l("&&&(&2!1!3)!3")
+TUPLE_BUILDER = l("&(&1)!1")
 T = {}
 for i in range(64 + 1):
     T[i] = b(l(f"({SHEME})!{TUPLE_BUILDER}"))

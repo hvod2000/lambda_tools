@@ -11,4 +11,4 @@ TRUNCATED_NOT = l(f"&({TRUE})!({FALSE})!1")
 NOT = TRUNCATED_NOT
 XOR = l(f"&&1!(1!{NOT})!2")
 IMPLICATION = l(f"&&({TRUE})!2!1")
-EQUIVALENCE = l(f'&&(2!{NOT})!2!1')
+EQUIVALENCE = l(f"&&(2!{NOT})!2!1")
